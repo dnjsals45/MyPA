@@ -1,6 +1,6 @@
 services:
   database:
-    container_name: picklab-db
+    container_name: mypa-db
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: password
