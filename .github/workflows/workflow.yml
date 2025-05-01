@@ -64,26 +64,20 @@ jobs:
       - name: use gcloud cli
         run: "gcloud info"
 
-      - name: Print SSH user
+      - name: Deploy to GCE VM Instance
         run: |
           gcloud compute ssh ${{ secrets.GCE_INSTANCE_NAME }} \
             --zone=${{ secrets.GCE_INSTANCE_ZONE }} \
-            --command="whoami"
-
-#      - name: Deploy to GCE VM Instance
-#        run: |
-#          gcloud compute ssh ${{ secrets.GCE_INSTANCE_NAME }} \
-#            --zone=${{ secrets.GCE_INSTANCE_ZONE }} \
-#            --command="\
-#              docker stop ${{ secrets.APP_NAME }} || true && \
-#              docker rm ${{ secrets.APP_NAME }} || true && \
-#              docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.sha }} || true && \
-#              docker pull ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
-#              docker run -d --name ${{ secrets.APP_NAME }} \
-#                --env-file /home/${{ secrets.GCE_USERNAME }}/.env \
-#                -v /etc/localtime:/etc/localtime:ro \
-#                -e TZ=Asia/Seoul \
-#                -p 8080:8080 \
-#                --memory=1g --memory-swap=1g \
-#                ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
-#              docker image prune -f"
+            --command="\
+              docker stop ${{ secrets.APP_NAME }} || true && \
+              docker rm ${{ secrets.APP_NAME }} || true && \
+              docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.sha }} || true && \
+              docker pull ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
+              docker run -d --name ${{ secrets.APP_NAME }} \
+                --env-file /home/${{ secrets.GCE_USERNAME }}/.env \
+                -v /etc/localtime:/etc/localtime:ro \
+                -e TZ=Asia/Seoul \
+                -p 8080:8080 \
+                --memory=1g --memory-swap=1g \
+                ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
+              docker image prune -f"
