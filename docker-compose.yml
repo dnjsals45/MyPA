@@ -1,0 +1,12 @@
+services:
+  database:
+    container_name: mypa-db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mypa
+      TZ: Asia/Seoul
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./src/main/resources/db/migration/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
