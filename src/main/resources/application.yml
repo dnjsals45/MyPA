@@ -13,14 +13,31 @@ spring:
         format_sql: true
     open-in-view: false
 
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3310/mypa
     username: root
     password: password
 
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
