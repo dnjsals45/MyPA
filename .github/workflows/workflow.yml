@@ -1,4 +1,4 @@
-name: PickLab BE Workflow
+name: MyPA BE Workflow
 on:
   push:
     branches:
