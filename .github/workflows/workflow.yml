@@ -74,7 +74,7 @@ jobs:
               docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.sha }} || true && \
               docker pull ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
               docker run -d --name ${{ secrets.APP_NAME }} \
-                --env-file /home/${{ secrets.GCE_USERNAME }}/.env \
+                --env-file ${{ secrets.ENV_FILE_LOCATION }} \
                 -v /etc/localtime:/etc/localtime:ro \
                 -e TZ=Asia/Seoul \
                 -p 8080:8080 \
