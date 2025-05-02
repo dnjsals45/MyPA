@@ -1,4 +1,4 @@
-package seongmin.mypa.domain.member
+package seongmin.mypa.member.domain.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import seongmin.mypa.member.domain.model.Member

@@ -1,11 +1,11 @@
-package seongmin.mypa.application.auth.oauth
+package seongmin.mypa.auth.application.oauth
 
 import com.fasterxml.jackson.databind.JsonNode
-import seongmin.mypa.domain.auth.OAuthUserInfo
+import seongmin.mypa.auth.domain.oauth.OAuthUserInfo
 
 class KakaoUserInfo (
     private val attributes: JsonNode
-) :OAuthUserInfo {
+) : OAuthUserInfo {
     override fun getSocialId(): String {
         return attributes["id"].asText()
     }

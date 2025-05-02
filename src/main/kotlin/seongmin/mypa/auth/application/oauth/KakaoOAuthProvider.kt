@@ -1,4 +1,4 @@
-package seongmin.mypa.application.auth.oauth
+package seongmin.mypa.auth.application.oauth
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.beans.factory.annotation.Qualifier
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
-import seongmin.mypa.application.auth.OAuthProvider
-import seongmin.mypa.domain.auth.OAuthUserInfo
+import seongmin.mypa.auth.domain.oauth.OAuthProvider
+import seongmin.mypa.auth.domain.oauth.OAuthUserInfo
 
 @Component
 class KakaoOAuthProvider (

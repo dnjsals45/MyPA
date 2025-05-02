@@ -1,4 +1,4 @@
-package seongmin.mypa.domain.auth
+package seongmin.mypa.auth.domain.oauth
 
 interface OAuthUserInfo {
     fun getSocialId(): String

@@ -1,4 +1,4 @@
-package seongmin.mypa.interfaces.api.auth
+package seongmin.mypa.member.interfaces.api
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import seongmin.mypa.application.auth.oauth.KakaoOAuthProvider
+import seongmin.mypa.auth.application.oauth.KakaoOAuthProvider
 import java.net.URI
 
 @RestController
