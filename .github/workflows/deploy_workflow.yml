@@ -54,14 +54,14 @@ jobs:
           docker push ${{ secrets.DOCKER_REPO }}:latest
           docker push ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }}
           
-      - name: Clone env repository
+      - name: Clone private repository
         uses: actions/checkout@v4
         with:
           repository: ${{ secrets.PRIVATE_REPO }}
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           path: .configs
 
-      - name: Copy env files and deploy script
+      - name: Copy env file and deploy script
         run: |
           cp .configs/${{ secrets.PRIVATE_ENV_FILE }} .env
           cp .configs/${{ secrets.PRIVATE_DEPLOY_FILE }} script.sh
@@ -93,4 +93,5 @@ jobs:
               ${{ secrets.APP_NAME }} \
               ${{ secrets.DOCKER_REPO }} \
               ${{ github.event.workflow_run.head_sha }} \
-              ${{ secrets.ENV_FILE }}"
+              ${{ secrets.ENV_FILE }} && \
+              rm -f ${{ secrets.DEPLOY_FILE }}"
