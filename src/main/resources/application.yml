@@ -47,6 +47,13 @@ spring:
     username: root
     password: password
 
+jwt:
+  access:
+    secret-key: ${JWT_ACCESS_KEY}
+    expiration: 1800000
+  refresh:
+    secret-key: ${JWT_REFRESH_KEY}
+    expiration: 604800000
 ---
 spring:
   config:
