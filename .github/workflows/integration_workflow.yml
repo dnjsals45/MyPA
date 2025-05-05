@@ -25,5 +25,19 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run Tests
-        run: ./gradlew test
+      - name: Clone env repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.ENV_REPO }}
+          token: ${{ secrets.ENV_TOKEN }}
+          path: .envs
+
+      - name: Copy env files
+        run: cp .envs/${{ secrets.ENV_FILE_NAME }} .env
+
+      - name: Run test with env
+        run: |
+          set -a
+          source .env
+          set +a
+          ./gradlew test
