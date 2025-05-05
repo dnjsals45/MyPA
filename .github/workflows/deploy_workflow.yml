@@ -53,6 +53,16 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_REPO }}:latest
           docker push ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }}
+          
+      - name: Clone env repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.ENV_REPO }}
+          token: ${{ secrets.ENV_TOKEN }}
+          path: .envs
+
+      - name: Copy env files
+        run: cp .envs/${{ secrets.ENV_FILE_NAME }} .env
 
       - name: Google Auth
         id: "auth"
@@ -65,20 +75,13 @@ jobs:
         with:
           project_id: ${{ secrets.GCE_PROJECT_ID }}
 
+      - name: Copy .env to GCP VM
+        run: |
+          gcloud compute scp .env ${{ secrets.GCE_USERNAME }}@${{ secrets.GCE_INSTANCE_NAME }}:~/.env \
+            --zone=${{ secrets.GCE_INSTANCE_ZONE }} --quiet
+
       - name: Deploy to GCE VM Instance
         run: |
-          gcloud compute ssh ${{ secrets.GCE_INSTANCE_NAME }} \
+          gcloud compute ssh ${{ secrets.GCE_USERNAME }}@${{ secrets.GCE_INSTANCE_NAME }} \
             --zone=${{ secrets.GCE_INSTANCE_ZONE }} \
-            --command="\
-              docker stop ${{ secrets.APP_NAME }} || true && \
-              docker rm ${{ secrets.APP_NAME }} || true && \
-              docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} || true && \
-              docker pull ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} && \
-              docker run -d --name ${{ secrets.APP_NAME }} \
-                --env-file ${{ secrets.ENV_FILE_LOCATION }} \
-                -v /etc/localtime:/etc/localtime:ro \
-                -e TZ=Asia/Seoul \
-                -p 8080:8080 \
-                --memory=1g --memory-swap=1g \
-                ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} && \
-              docker image prune -f"
+            --command="whoami"
