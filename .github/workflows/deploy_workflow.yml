@@ -1,4 +1,4 @@
-name: MyPA BE Workflow
+name: MyPA BE Deploy Workflow
 on:
   push:
     branches:
@@ -60,9 +60,6 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
         with:
           project_id: ${{ secrets.GCE_PROJECT_ID }}
-
-      - name: use gcloud cli
-        run: "gcloud info"
 
       - name: Deploy to GCE VM Instance
         run: |
