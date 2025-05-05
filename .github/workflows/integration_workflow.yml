@@ -28,12 +28,12 @@ jobs:
       - name: Clone env repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.ENV_REPO }}
-          token: ${{ secrets.ENV_TOKEN }}
+          repository: ${{ secrets.PRIVATE_REPO }}
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           path: .envs
 
       - name: Copy env files
-        run: cp .envs/${{ secrets.ENV_FILE_NAME }} .env
+        run: cp .envs/${{ secrets.PRIVATE_ENV_FILE }} .env
 
       - name: Run test with env
         run: |
