@@ -1,8 +1,11 @@
 name: MyPA BE Deploy Workflow
+
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows:
+      - 'MyPA BE Integration Workflow'
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       logLevel:
@@ -16,6 +19,7 @@ permissions:
 
 jobs:
   docker-build-push-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Create Docker Image
     runs-on: ubuntu-latest
     steps:
@@ -39,16 +43,16 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: build docker
-        run: ./gradlew bootBuildImage --imageName=${{ secrets.DOCKER_REPO }}:${{ github.sha }}
+        run: ./gradlew bootBuildImage --imageName=${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }}
 
       - name: Tag Version
         run: |
-          docker tag ${{ secrets.DOCKER_REPO }}:${{ github.sha }} ${{ secrets.DOCKER_REPO }}:latest
+          docker tag ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} ${{ secrets.DOCKER_REPO }}:latest
 
       - name: Publish Docker Images
         run: |
           docker push ${{ secrets.DOCKER_REPO }}:latest
-          docker push ${{ secrets.DOCKER_REPO }}:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }}
 
       - name: Google Auth
         id: "auth"
@@ -68,13 +72,13 @@ jobs:
             --command="\
               docker stop ${{ secrets.APP_NAME }} || true && \
               docker rm ${{ secrets.APP_NAME }} || true && \
-              docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.sha }} || true && \
-              docker pull ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
+              docker rmi ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} || true && \
+              docker pull ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} && \
               docker run -d --name ${{ secrets.APP_NAME }} \
                 --env-file ${{ secrets.ENV_FILE_LOCATION }} \
                 -v /etc/localtime:/etc/localtime:ro \
                 -e TZ=Asia/Seoul \
                 -p 8080:8080 \
                 --memory=1g --memory-swap=1g \
-                ${{ secrets.DOCKER_REPO }}:${{ github.sha }} && \
+                ${{ secrets.DOCKER_REPO }}:${{ github.event.workflow_run.head_sha }} && \
               docker image prune -f"
