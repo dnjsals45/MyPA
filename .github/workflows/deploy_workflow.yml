@@ -84,5 +84,4 @@ jobs:
               ${{ secrets.APP_NAME }} \
               ${{ secrets.DOCKER_REPO }} \
               ${{ github.event.workflow_run.head_sha }} \
-              ${{ secrets.ENV_FILE }} ; \
-              rm -f ${{ secrets.DEPLOY_FILE }} ${{ secrets.ENV_FILE }}"
+              ${{ secrets.ENV_FILE }}"
