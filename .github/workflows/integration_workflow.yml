@@ -9,12 +9,30 @@ on:
       - main
 
 jobs:
-  test:
+  Test-project:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testdb
+          TZ: Asia/Seoul
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -25,19 +43,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Clone env repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ secrets.PRIVATE_REPO }}
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          path: .envs
-
-      - name: Copy env files
-        run: cp .envs/${{ secrets.PRIVATE_ENV_FILE }} .env
-
-      - name: Run test with env
-        run: |
-          set -a
-          source .env
-          set +a
-          ./gradlew test
+      - name: Run test
+        env:
+          SPRING_PROFILES_ACTIVE: test
+        run: ./gradlew test --stacktrace
