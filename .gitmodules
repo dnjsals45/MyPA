@@ -1,0 +1,3 @@
+[submodule "src/main/resources/MyPA_env"]
+	path = src/main/resources/MyPA_env
+	url = https://github.com/dnjsals45/MyPA_env
